@@ -1,19 +1,17 @@
 package fr.insalyon.telecom.mgl;
 
-import java.util.HashMap;
-
 class RomanNumberConverter {
 
-    private final HashMap<Character, Integer> map = new HashMap<>();
+    private static final int[] values = {1, 5, 10, 50, 100, 500, 1000};
+    private static final char[] keys = {'I', 'V', 'X', 'L', 'C', 'D', 'M'};
 
-    RomanNumberConverter() {
-        map.put('I', 1);
-        map.put('V', 5);
-        map.put('X', 10);
-        map.put('L', 50);
-        map.put('C', 100);
-        map.put('D', 500);
-        map.put('M', 1000);
+    private static int getValueFor(char c) {
+        for (int i = 0; i < keys.length; ++i) {
+            if (keys[i] == c) {
+                return values[i];
+            }
+        }
+        throw new NullPointerException();
     }
 
     int convert(String romanNumber) {
@@ -22,7 +20,7 @@ class RomanNumberConverter {
             char c = romanNumber.charAt(i);
             try {
                 // try to get the corresponding value in dictionary
-                int value = map.get(c);
+                int value = getValueFor(c);
                 // not more than 3 times the same letter, excepted for M
                 if (value == lastValue && c != 'M' && ++same > 2)
                     throw new IllegalArgumentException("Invalid syntax: too much repetitions of char " + c);
@@ -41,16 +39,41 @@ class RomanNumberConverter {
     }
 
     String convert(int number) {
-        StringBuilder roman = new StringBuilder();
-        for (int i = 0; i < number; ++i) {
-            roman.append("I");
+        // get the upper roman number for this int
+        try {
+            int index = getUpperRoman(number);
+            int value = values[index];
+            if (number > value) {
+                // if above, complete with numbers
+                return keys[index] + convert(number - value);
+            } else if (number < value) {
+                // try by removing one
+                for (int i = 0; i < index; ++i) {
+                    if (value - values[i] == number) {
+                        return keys[i] + "" + keys[index];
+                    }
+                }
+                // else, take previous number and add some to the right
+                return keys[index - 1] + convert(number - values[index - 1]);
+            } else {
+                // if equals, return number
+                return "" + keys[index];
+            }
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("Roman don't know the Zero!");
         }
-        return roman.toString();
     }
 
-    String getClosestRoman(int i) {
-        if (i > 3) return "V";
-        return "I";
+    int getUpperRoman(int nbr) {
+        int i = values.length - 1;
+        for (; i >= 0; --i) {
+            if (nbr > values[i]) {
+                return i == values.length - 1 ? i : i + 1;
+            } else if (nbr == values[i]) {
+                return i;
+            }
+        }
+        throw new NullPointerException();
     }
 
 }

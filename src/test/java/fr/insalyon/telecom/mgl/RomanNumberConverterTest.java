@@ -1,9 +1,9 @@
 package fr.insalyon.telecom.mgl;
 
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RomanNumberConverterTest {
 
@@ -13,8 +13,6 @@ public class RomanNumberConverterTest {
     public void setup() {
         romanNumberConverter = new RomanNumberConverter();
     }
-
-    // convert
 
     @Test
     public void convert_return1GivenI() {
@@ -104,6 +102,54 @@ public class RomanNumberConverterTest {
     }
 
     @Test
+    public void getUpperRoman_returnIgiven1() {
+        assertThat(romanNumberConverter.getUpperRoman(1))
+                .isEqualTo(0);
+    }
+
+    @Test
+    public void getUpperRoman_returnIgiven2() {
+        assertThat(romanNumberConverter.getUpperRoman(2))
+                .isEqualTo(1);
+    }
+
+    @Test
+    public void getUpperRoman_returnIgiven3() {
+        assertThat(romanNumberConverter.getUpperRoman(3))
+                .isEqualTo(1);
+    }
+
+    @Test
+    public void getUpperRoman_returnVgiven4() {
+        assertThat(romanNumberConverter.getUpperRoman(4))
+                .isEqualTo(1);
+    }
+
+    @Test
+    public void getUpperRoman_returnVgiven5() {
+        assertThat(romanNumberConverter.getUpperRoman(5))
+                .isEqualTo(1);
+    }
+
+    @Test
+    public void getUpperRoman_returnXgiven6() {
+        assertThat(romanNumberConverter.getUpperRoman(6))
+                .isEqualTo(2);
+    }
+
+    @Test
+    public void getUpperRoman_returnXgiven8() {
+        assertThat(romanNumberConverter.getUpperRoman(8))
+                .isEqualTo(2);
+    }
+
+    @Test
+    public void getUpperRoman_returnXgiven9() {
+        assertThat(romanNumberConverter.getUpperRoman(9))
+                .isEqualTo(2);
+    }
+
+    @Test
     public void convert_returnIGiven1() {
         assertThat(romanNumberConverter.convert(1))
                 .isEqualTo("I");
@@ -122,57 +168,44 @@ public class RomanNumberConverterTest {
     }
 
     @Test
-    public void getClosestRoman_returnIgiven1() {
-        assertThat(romanNumberConverter.getClosestRoman(1))
-                .isEqualTo("I");
+    public void convert_returnVIGiven6() {
+        assertThat(romanNumberConverter.convert(6))
+                .isEqualTo("VI");
     }
 
     @Test
-    public void getClosestRoman_returnIgiven2() {
-        assertThat(romanNumberConverter.getClosestRoman(2))
-                .isEqualTo("I");
+    public void convert_returnIVGiven4() {
+        assertThat(romanNumberConverter.convert(4))
+                .isEqualTo("IV");
     }
 
     @Test
-    public void getClosestRoman_returnIgiven3() {
-        assertThat(romanNumberConverter.getClosestRoman(3))
-                .isEqualTo("I");
+    public void convert_returnVIIGiven7() {
+        assertThat(romanNumberConverter.convert(7))
+                .isEqualTo("VII");
     }
 
     @Test
-    public void getClosestRoman_returnVgiven4() {
-        assertThat(romanNumberConverter.getClosestRoman(4))
-                .isEqualTo("V");
+    public void convert_returnVIIIGiven8() {
+        assertThat(romanNumberConverter.convert(8))
+                .isEqualTo("VIII");
     }
 
     @Test
-    public void getClosestRoman_returnVgiven5() {
-        assertThat(romanNumberConverter.getClosestRoman(5))
-                .isEqualTo("V");
+    public void convert_returnMMGiven2000() {
+        assertThat(romanNumberConverter.convert(2000))
+                .isEqualTo("MM");
     }
 
     @Test
-    public void getClosestRoman_returnVgiven6() {
-        assertThat(romanNumberConverter.getClosestRoman(6))
-                .isEqualTo("V");
+    public void convert_returnMMVIIGiven2007() {
+        assertThat(romanNumberConverter.convert(2007))
+                .isEqualTo("MMVII");
     }
 
-    @Test
-    public void getClosestRoman_returnVgiven7() {
-        assertThat(romanNumberConverter.getClosestRoman(7))
-                .isEqualTo("V");
-    }
-
-    @Test
-    public void getClosestRoman_returnVgiven8() {
-        assertThat(romanNumberConverter.getClosestRoman(7))
-                .isEqualTo("V");
-    }
-
-    @Test
-    public void getClosestRoman_returnXgiven9() {
-        assertThat(romanNumberConverter.getClosestRoman(7))
-                .isEqualTo("X");
+    @Test(expected = IllegalArgumentException.class)
+    public void convert_returnExceptionGivenZero() {
+        romanNumberConverter.convert(0);
     }
 
 }
