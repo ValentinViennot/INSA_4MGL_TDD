@@ -102,54 +102,6 @@ public class RomanNumberConverterTest {
     }
 
     @Test
-    public void getUpperRoman_returnIgiven1() {
-        assertThat(romanNumberConverter.getUpperRoman(1))
-                .isEqualTo(0);
-    }
-
-    @Test
-    public void getUpperRoman_returnIgiven2() {
-        assertThat(romanNumberConverter.getUpperRoman(2))
-                .isEqualTo(1);
-    }
-
-    @Test
-    public void getUpperRoman_returnIgiven3() {
-        assertThat(romanNumberConverter.getUpperRoman(3))
-                .isEqualTo(1);
-    }
-
-    @Test
-    public void getUpperRoman_returnVgiven4() {
-        assertThat(romanNumberConverter.getUpperRoman(4))
-                .isEqualTo(1);
-    }
-
-    @Test
-    public void getUpperRoman_returnVgiven5() {
-        assertThat(romanNumberConverter.getUpperRoman(5))
-                .isEqualTo(1);
-    }
-
-    @Test
-    public void getUpperRoman_returnXgiven6() {
-        assertThat(romanNumberConverter.getUpperRoman(6))
-                .isEqualTo(2);
-    }
-
-    @Test
-    public void getUpperRoman_returnXgiven8() {
-        assertThat(romanNumberConverter.getUpperRoman(8))
-                .isEqualTo(2);
-    }
-
-    @Test
-    public void getUpperRoman_returnXgiven9() {
-        assertThat(romanNumberConverter.getUpperRoman(9))
-                .isEqualTo(2);
-    }
-
-    @Test
     public void convert_returnIGiven1() {
         assertThat(romanNumberConverter.convert(1))
                 .isEqualTo("I");
@@ -206,6 +158,12 @@ public class RomanNumberConverterTest {
     @Test(expected = IllegalArgumentException.class)
     public void convert_returnExceptionGivenZero() {
         romanNumberConverter.convert(0);
+    }
+
+    @Test
+    public void findSubtrahendToGetExactValue_returnIfor9upper10() throws NullPointerException {
+        assertThat(romanNumberConverter.findSubtrahendToGetExactValue(10, 9))
+                .isEqualTo('I');
     }
 
 }

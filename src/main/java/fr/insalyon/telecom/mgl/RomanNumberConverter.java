@@ -2,28 +2,12 @@ package fr.insalyon.telecom.mgl;
 
 class RomanNumberConverter {
 
-    private static final int[] values = {1, 5, 10, 50, 100, 500, 1000};
-    private static final char[] keys = {'I', 'V', 'X', 'L', 'C', 'D', 'M'};
-
-    private static int getValueFor(char c) {
-        for (int i = 0; i < keys.length; ++i) {
-            if (keys[i] == c) {
-                return values[i];
-            }
-        }
-        throw new NullPointerException();
-    }
-
     int convert(String romanNumber) {
-        int sum = 0, same = 0, lastValue = 0;
-        for (int i = 0; i < romanNumber.length(); ++i) {
-            char c = romanNumber.charAt(i);
+        int sum = 0, lastValue = 0;
+        checkNoMoreThanThreeTimesPerLetter(romanNumber);
+        for (char c : romanNumber.toCharArray()) {
             try {
-                // try to get the corresponding value in dictionary
-                int value = getValueFor(c);
-                // not more than 3 times the same letter, excepted for M
-                if (value == lastValue && c != 'M' && ++same > 2)
-                    throw new IllegalArgumentException("Invalid syntax: too much repetitions of char " + c);
+                int value = RomanDictionary.getArabicValue(c);
                 // IV = 4 but VI = 6
                 if (lastValue < value) {
                     sum += (value - 2 * lastValue);
@@ -38,42 +22,49 @@ class RomanNumberConverter {
         return sum;
     }
 
-    String convert(int number) {
-        // get the upper roman number for this int
-        try {
-            int index = getUpperRoman(number);
-            int value = values[index];
-            if (number > value) {
-                // if above, complete with numbers
-                return keys[index] + convert(number - value);
-            } else if (number < value) {
-                // try by removing one
-                for (int i = 0; i < index; ++i) {
-                    if (value - values[i] == number) {
-                        return keys[i] + "" + keys[index];
-                    }
-                }
-                // else, take previous number and add some to the right
-                return keys[index - 1] + convert(number - values[index - 1]);
-            } else {
-                // if equals, return number
-                return "" + keys[index];
+    private void checkNoMoreThanThreeTimesPerLetter(String roman) {
+        int count = 0;
+        char lastChar = ' ';
+        for (char c : roman.toCharArray()) {
+            if (c == lastChar && c != 'M' && ++count > 2) {
+                throw new IllegalArgumentException("Invalid syntax: too much repetitions of char " + c);
             }
-        } catch (NullPointerException e) {
-            throw new IllegalArgumentException("Roman don't know the Zero!");
+            lastChar = c;
         }
     }
 
-    int getUpperRoman(int nbr) {
-        int i = values.length - 1;
-        for (; i >= 0; --i) {
-            if (nbr > values[i]) {
-                return i == values.length - 1 ? i : i + 1;
-            } else if (nbr == values[i]) {
-                return i;
+    String convert(int number) throws IllegalArgumentException {
+        if (number == 0) {
+            throw new IllegalArgumentException("Wait for Arabs...");
+        }
+        char upperRoman = RomanDictionary.getUpperRomanInDictionary(number);
+        int upperArabic = RomanDictionary.getArabicValue(upperRoman);
+        if (number > upperArabic) {
+            return upperRoman + convert(number - upperArabic);
+        }
+        if (number < upperArabic) {
+            try {
+                return findSubtrahendToGetExactValue(upperArabic, number) + "" + upperRoman;
+            } catch (NullPointerException e) {
+                final int previousIndex = RomanDictionary.getIndex(upperRoman) - 1;
+                return RomanDictionary.romanValues[previousIndex] + convert(number - RomanDictionary.arabicValues[previousIndex]);
             }
         }
-        throw new NullPointerException();
+        return "" + upperRoman;
     }
 
+    char findSubtrahendToGetExactValue(int upperValue, int matchValue) throws NullPointerException {
+        return findSubtrahendToGetExactValue(upperValue, matchValue, 0);
+    }
+
+    private char findSubtrahendToGetExactValue(int upperValue, int matchValue, int startIndex) throws NullPointerException {
+        int resultRemain = (upperValue - RomanDictionary.arabicValues[startIndex]) - matchValue;
+        if (resultRemain == 0) {
+            return RomanDictionary.romanValues[startIndex];
+        }
+        if (resultRemain < 0) {
+            throw new NullPointerException();
+        }
+        return findSubtrahendToGetExactValue(upperValue, matchValue, startIndex + 1);
+    }
 }
